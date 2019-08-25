@@ -29,4 +29,4 @@ INCLUDE_DIRS =\
   mocks
   
 include ../CppUTestCompileFlags.mk
-include $(CPPUTEST_HOME)/build/MakefileWorker.mk
+include ../cpputest/build/MakefileWorker.mk

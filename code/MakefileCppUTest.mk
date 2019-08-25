@@ -56,5 +56,5 @@ include ../CppUTestCompileFlags.mk
 LD_LIBRARIES = -lpthread
 	
   
-include $(CPPUTEST_HOME)/build/MakefileWorker.mk
+include ../cpputest/build/MakefileWorker.mk
 

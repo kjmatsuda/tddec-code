@@ -30,4 +30,4 @@ INCLUDE_DIRS =\
   
 CPPUTEST_USE_EXTENSIONS = Y
 include ../CppUTestCompileFlags.mk
-include $(CPPUTEST_HOME)/build/MakefileWorker.mk
+include ../cpputest/build/MakefileWorker.mk

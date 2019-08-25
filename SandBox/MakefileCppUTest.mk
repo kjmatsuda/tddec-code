@@ -26,4 +26,4 @@ INCLUDE_DIRS =\
   $(PROJECT_HOME_DIR)/include/LedDriver\
 
 include ../CppUTestCompileFlags.mk
-include $(CPPUTEST_HOME)/build/MakefileWorker.mk
+include ../cpputest/build/MakefileWorker.mk
