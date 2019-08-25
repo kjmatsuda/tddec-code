@@ -38,4 +38,4 @@ Debug
 *.user
 RemoteSystemsTempFiles/*
 *.sublime*
-
+.cproject
