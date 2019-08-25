@@ -10,7 +10,7 @@ CPPUTEST_WARNINGFLAGS += -Wno-missing-noreturn
 endif
 
 CPPUTEST_WARNINGFLAGS += -Wall 
-CPPUTEST_WARNINGFLAGS += -Werror
+# CPPUTEST_WARNINGFLAGS += -Werror
 CPPUTEST_WARNINGFLAGS += -Wswitch-default
 CPPUTEST_WARNINGFLAGS += -Wno-format-nonliteral
 CPPUTEST_WARNINGFLAGS += -Wno-sign-conversion 
