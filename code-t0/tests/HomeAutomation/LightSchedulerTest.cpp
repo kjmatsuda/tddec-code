@@ -25,6 +25,9 @@ extern "C"
 }
 #include "CppUTest/TestHarness.h"
 
+static void setTimeTo(int day, int minuteOfDay);
+static void checkLightState(int id, int level);
+
 TEST_GROUP(LightScheduler)
 {
     void setup()
@@ -90,4 +93,27 @@ TEST(LightScheduler, ScheduleOffEverydayItsTime)
 
     LONGS_EQUAL(3, LightControllerSpy_GetLastId());
     LONGS_EQUAL(LIGHT_OFF, LightControllerSpy_GetLastState());
+}
+
+TEST(LightScheduler, ScheduleWeekEndItsMonday)
+{
+	LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+
+	setTimeTo(MONDAY, 1200);
+
+	LightScheduler_WakeUp();
+
+	checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+static void setTimeTo(int day, int minuteOfDay)
+{
+	FakeTimeService_SetDay(day);
+	FakeTimeService_SetMinute(minuteOfDay);
+}
+
+static void checkLightState(int id, int level)
+{
+	LONGS_EQUAL(id, LightControllerSpy_GetLastId());
+	LONGS_EQUAL(level, LightControllerSpy_GetLastState());
 }
