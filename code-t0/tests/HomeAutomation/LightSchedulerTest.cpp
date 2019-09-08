@@ -95,10 +95,19 @@ TEST(LightScheduler, ScheduleOffEverydayItsTime)
     LONGS_EQUAL(LIGHT_OFF, LightControllerSpy_GetLastState());
 }
 
-TEST(LightScheduler, ScheduleWeekEndItsMonday)
+TEST(LightScheduler, ScheduleWeekEndButItsMonday)
 {
 	LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+	setTimeTo(MONDAY, 1200);
 
+	LightScheduler_WakeUp();
+
+	checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+TEST(LightScheduler, ScheduleTuesdayButItsMonday)
+{
+	LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
 	setTimeTo(MONDAY, 1200);
 
 	LightScheduler_WakeUp();

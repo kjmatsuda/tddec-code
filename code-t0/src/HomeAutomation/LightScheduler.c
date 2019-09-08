@@ -44,6 +44,7 @@ enum
 typedef struct
 {
     int id;
+    Day day;
     int minuteOfDay;
     int event;
 } ScheduledLightEvent;
@@ -51,6 +52,8 @@ typedef struct
 static ScheduledLightEvent scheduledEvent;
 
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event);
+static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent);
+static void operateLight(ScheduledLightEvent *pEvent);
 
 void LightScheduler_Create(void)
 {
@@ -77,24 +80,7 @@ void LightScheduler_WakeUp(void)
 	Time time;
 	TimeService_GetTime(&time);
 
-	if (scheduledEvent.id == UNUSED)
-	{
-		return;
-	}
-
-	if (time.minuteOfDay != scheduledEvent.minuteOfDay)
-	{
-		return;
-	}
-
-	if (scheduledEvent.event == TURN_ON)
-	{
-		LightController_TurnOn(scheduledEvent.id);
-	}
-	else if (scheduledEvent.event == TURN_OFF)
-	{
-		LightController_TurnOff(scheduledEvent.id);
-	}
+	processEventDueNow(&time, &scheduledEvent);
 }
 
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
@@ -102,4 +88,35 @@ static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
 	scheduledEvent.minuteOfDay = minuteOfDay;
 	scheduledEvent.event = event;
 	scheduledEvent.id = id;
+	scheduledEvent.day = day;
+}
+
+static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)
+{
+	if (pEvent->id == UNUSED)
+	{
+		return;
+	}
+	if (pEvent->day != EVERYDAY)
+	{
+		return;
+	}
+	if (pEvent->minuteOfDay != pTime->minuteOfDay)
+	{
+		return;
+	}
+
+	operateLight(pEvent);
+}
+
+static void operateLight(ScheduledLightEvent *pEvent)
+{
+	if (pEvent->event == TURN_ON)
+	{
+		LightController_TurnOn(pEvent->id);
+	}
+	else if (pEvent->event == TURN_OFF)
+	{
+		LightController_TurnOff(pEvent->id);
+	}
 }
