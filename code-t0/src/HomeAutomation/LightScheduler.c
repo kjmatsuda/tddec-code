@@ -54,6 +54,7 @@ static ScheduledLightEvent scheduledEvent;
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event);
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent);
 static void operateLight(ScheduledLightEvent *pEvent);
+static int DoesLightRespondToday(Day eventDay, Day currentDay);
 
 void LightScheduler_Create(void)
 {
@@ -97,22 +98,9 @@ static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)
 	{
 		return;
 	}
-	if (pEvent->day != EVERYDAY)
+	if (!DoesLightRespondToday(pEvent->day, pTime->dayOfWeek))
 	{
-		if (pEvent->day == WEEKEND)
-		{
-			if (pTime->dayOfWeek != SATURDAY && pTime->dayOfWeek != SUNDAY)
-			{
-				return;
-			}
-		}
-		else
-		{
-			if (pEvent->day != pTime->dayOfWeek)
-			{
-				return;
-			}
-		}
+		return;
 	}
 	if (pEvent->minuteOfDay != pTime->minuteOfDay)
 	{
@@ -132,4 +120,35 @@ static void operateLight(ScheduledLightEvent *pEvent)
 	{
 		LightController_TurnOff(pEvent->id);
 	}
+}
+
+static int DoesLightRespondToday(Day eventDay, Day currentDay)
+{
+	if (eventDay == EVERYDAY)
+	{
+		return TRUE;
+	}
+
+	if (eventDay == WEEKEND)
+	{
+		if (currentDay == SATURDAY || currentDay == SUNDAY)
+		{
+			return TRUE;
+		}
+	}
+
+	if (eventDay == WEEKDAY)
+	{
+		if (currentDay >= MONDAY && currentDay <= FRIDAY)
+		{
+			return TRUE;
+		}
+	}
+
+	if (eventDay == currentDay)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
 }
