@@ -97,7 +97,7 @@ static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)
 	{
 		return;
 	}
-	if (pEvent->day != EVERYDAY)
+	if (pEvent->day != EVERYDAY && pEvent->day != pTime->dayOfWeek)
 	{
 		return;
 	}
