@@ -29,15 +29,11 @@
 
 static int lastId;
 static int lastLevel;
-static int count;
-static int lights[MAX_LIGHTS];
 
 void LightController_Create(void)
 {
     lastId = LIGHT_ID_UNKNOWN;
     lastLevel = LIGHT_STATE_UNKNOWN;
-    count = 0;
-    memset(lights, LIGHT_STATE_UNKNOWN, sizeof lights);
 }
 
 void LightController_Destroy(void)
@@ -54,77 +50,14 @@ int LightControllerSpy_GetLastState(void)
     return lastLevel;
 }
 
-static int isIdInRange(int id)
-{
-    return id > 0 && id <=32;
-}
 void LightController_TurnOn(int id)
 {
     lastId = id;
-    lastLevel = 1;
-    count++;
-    if (isIdInRange(id))
-        lights[id-1] = LIGHT_ON;
+    lastLevel = LIGHT_ON;
 }
 
 void LightController_TurnOff(int id)
 {
     lastId = id;
-    lastLevel = 0;
-    count++;
-    if (isIdInRange(id))
-        lights[id-1] = LIGHT_OFF;
+    lastLevel = LIGHT_OFF;
 }
-
-int LightControllerSpy_GetEventCounts(void)
-{
-    return count;
-}
-
-LightState LightControllerSpy_GetLightState(int id)
-{
-    if (!isIdInRange(id))
-        return LIGHT_STATE_UNKNOWN;
-    return lights[id-1];
-}
-
-#if 0
-#include "LightController.h"
-
-static int lastId; 
-static int lastLevel;
-
-void LightController_Create(void) 
-{
-    lastId = -1;
-    lastLevel = -1;
-}
-
-void LightController_Destroy(void)
-{
-}
-
-void LightController_TurnOn(int id) 
-{
-    lastId = id;
-    lastLevel = 1;
-}
-
-void LightController_TurnOff(int id) 
-{
-    lastId = id;
-    lastLevel = 0;
-}
-
-int LightControllerSpy_GetLastId(void) 
-{
-    return lastId;
-}
-
-int LightControllerSpy_GetLastState(void)
-{
-    return lastLevel;
-}
-
-
-#endif

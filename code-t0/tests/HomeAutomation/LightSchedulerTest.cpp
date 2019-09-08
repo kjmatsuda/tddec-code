@@ -37,11 +37,18 @@ TEST_GROUP(LightScheduler)
     }
 };
 
-TEST(LightScheduler, ScheduleOnTodayNotTimeYet)
+TEST(LightScheduler, NoChangeToLightsDuringInitialization)
 {
-    LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
-    FakeTimeService_SetMinute(1199);
-    LightScheduler_WakeUp();
-    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
-    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+	LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
+	LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
 }
+
+// ひとつ目のテストとしては大きすぎるので一旦コメントアウト
+//TEST(LightScheduler, ScheduleOnTodayNotTimeYet)
+//{
+//    LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
+//    FakeTimeService_SetMinute(1199);
+//    LightScheduler_WakeUp();
+//    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
+//    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+//}
