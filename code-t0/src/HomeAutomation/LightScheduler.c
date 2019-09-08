@@ -64,16 +64,12 @@ void LightScheduler_Destroy(void)
 
 int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
-	scheduledEvent.id = id;
-	scheduledEvent.minuteOfDay = minuteOfDay;
-	scheduledEvent.event = TURN_ON;
+	scheduleEvent(id, day, minuteOfDay, TURN_ON);
 }
 
 int LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
-	scheduledEvent.id = id;
-	scheduledEvent.minuteOfDay = minuteOfDay;
-	scheduledEvent.event = TURN_OFF;
+	scheduleEvent(id, day, minuteOfDay, TURN_OFF);
 }
 
 void LightScheduler_WakeUp(void)
@@ -104,4 +100,6 @@ void LightScheduler_WakeUp(void)
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
 {
 	scheduledEvent.minuteOfDay = minuteOfDay;
+	scheduledEvent.event = event;
+	scheduledEvent.id = id;
 }
