@@ -49,7 +49,7 @@ typedef struct
     int event;
 } ScheduledLightEvent;
 
-static ScheduledLightEvent scheduledEvent;
+static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
 
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event);
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent);
@@ -58,7 +58,12 @@ static int DoesLightRespondToday(Day eventDay, Day currentDay);
 
 void LightScheduler_Create(void)
 {
-	scheduledEvent.id = UNUSED;
+	int ii = 0;
+
+	for (ii = 0; ii < MAX_EVENTS; ii++)
+	{
+		scheduledEvents[ii].id = UNUSED;
+	}
 
 	TimeService_SetPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
@@ -80,18 +85,29 @@ void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 
 void LightScheduler_WakeUp(void)
 {
+	int ii = 0;
 	Time time;
 	TimeService_GetTime(&time);
 
-	processEventDueNow(&time, &scheduledEvent);
+	for (ii = 0; ii < MAX_EVENTS; ii++)
+	{
+		processEventDueNow(&time, &scheduledEvents[ii]);
+	}
 }
 
 static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
 {
-	scheduledEvent.minuteOfDay = minuteOfDay;
-	scheduledEvent.event = event;
-	scheduledEvent.id = id;
-	scheduledEvent.day = day;
+	int ii = 0;
+
+	for (ii = 0; ii < MAX_EVENTS; ii++)
+	{
+		if (scheduledEvents[ii].id == UNUSED) {
+			scheduledEvents[ii].minuteOfDay = minuteOfDay;
+			scheduledEvents[ii].event = event;
+			scheduledEvents[ii].id = id;
+			scheduledEvents[ii].day = day;
+		}
+	}
 }
 
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)

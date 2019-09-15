@@ -29,6 +29,7 @@
 
 static int lastId;
 static int lastLevel;
+static int lightLevel[MAX_LIGHTS];
 
 void LightController_Create(void)
 {
@@ -40,6 +41,25 @@ void LightController_Destroy(void)
 {
 }
 
+void LightController_TurnOn(int id)
+{
+    lastId = id;
+    lastLevel = LIGHT_ON;
+    lightLevel[id] = LIGHT_ON;
+}
+
+void LightController_TurnOff(int id)
+{
+    lastId = id;
+    lastLevel = LIGHT_OFF;
+    lightLevel[id] = LIGHT_OFF;
+}
+
+int LightControllerSpy_GetLightState(int id)
+{
+	return lightLevel[id];
+}
+
 int LightControllerSpy_GetLastId(void)
 {
     return lastId;
@@ -48,16 +68,4 @@ int LightControllerSpy_GetLastId(void)
 int LightControllerSpy_GetLastState(void)
 {
     return lastLevel;
-}
-
-void LightController_TurnOn(int id)
-{
-    lastId = id;
-    lastLevel = LIGHT_ON;
-}
-
-void LightController_TurnOff(int id)
-{
-    lastId = id;
-    lastLevel = LIGHT_OFF;
 }
