@@ -59,19 +59,21 @@ static int DoesLightRespondToday(Day eventDay, Day currentDay);
 void LightScheduler_Create(void)
 {
 	scheduledEvent.id = UNUSED;
+
+	TimeService_SetPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
 
 void LightScheduler_Destroy(void)
 {
-
+	TimeService_CancelPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
 
-int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
+void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
 	scheduleEvent(id, day, minuteOfDay, TURN_ON);
 }
 
-int LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
+void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
 	scheduleEvent(id, day, minuteOfDay, TURN_OFF);
 }

@@ -165,6 +165,27 @@ TEST(LightScheduler, ScheduleWeekEndItsMonday)
 	checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
 }
 
+TEST_GROUP(LightSchedulerInitAndCleanup)
+{
+
+};
+
+TEST(LightSchedulerInitAndCleanup, CreateStartsOneMinuteAlarm)
+{
+	LightScheduler_Create();
+	POINTERS_EQUAL((void *)LightScheduler_WakeUp,
+					(void *)FakeTimeService_GetAlarmCallback());
+	LONGS_EQUAL(60, FakeTimeService_GetAlarmPeriod());
+	LightScheduler_Destroy();
+}
+
+TEST(LightSchedulerInitAndCleanup, DestroyCancelsOneMinuteAlarm)
+{
+	LightScheduler_Create();
+	LightScheduler_Destroy();
+	POINTERS_EQUAL(NULL, (void *)FakeTimeService_GetAlarmCallback());
+}
+
 static void setTimeTo(int day, int minuteOfDay)
 {
 	FakeTimeService_SetDay(day);

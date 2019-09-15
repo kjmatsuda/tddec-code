@@ -32,6 +32,8 @@
 
 void FakeTimeService_SetMinute(int);
 void FakeTimeService_SetDay(int);
+int FakeTimeService_GetAlarmPeriod();
+WakeupCallback FakeTimeService_GetAlarmCallback();
 
 enum {MINUTE_UNKNOWN = -1, DAY_UNKNOWN = -1 };
 
