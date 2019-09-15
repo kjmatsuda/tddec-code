@@ -106,6 +106,7 @@ static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
 			scheduledEvents[ii].event = event;
 			scheduledEvents[ii].id = id;
 			scheduledEvents[ii].day = day;
+			break;
 		}
 	}
 }
