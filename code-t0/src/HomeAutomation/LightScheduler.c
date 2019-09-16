@@ -115,6 +115,11 @@ static int scheduleEvent(int id, Day day, int minuteOfDay, int event)
 {
 	int ii = 0;
 
+	if (id < 0 || id >= MAX_LIGHTS)
+	{
+		return LS_ID_OUT_OF_BOUNDS;
+	}
+
 	for (ii = 0; ii < MAX_EVENTS; ii++)
 	{
 		if (scheduledEvents[ii].id == UNUSED) {
