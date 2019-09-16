@@ -95,6 +95,22 @@ void LightScheduler_WakeUp(void)
 	}
 }
 
+void LightScheduler_ScheduleRemove(int id, Day day, int minuteOfDay)
+{
+	int ii = 0;
+
+	for (ii = 0; ii < MAX_EVENTS; ii++)
+	{
+		if ((scheduledEvents[ii].id == id) &&
+			(scheduledEvents[ii].day == day) &&
+			(scheduledEvents[ii].minuteOfDay == minuteOfDay))
+		{
+			scheduledEvents[ii].id = UNUSED;
+			break;
+		}
+	}
+}
+
 static int scheduleEvent(int id, Day day, int minuteOfDay, int event)
 {
 	int ii = 0;

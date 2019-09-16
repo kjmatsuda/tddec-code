@@ -188,6 +188,18 @@ TEST(LightScheduler, RejectsTooManyEvents)
 	LONGS_EQUAL(LS_TOO_MANY_EVENTS, LightScheduler_ScheduleTurnOn(6, MONDAY, 600+ii));
 }
 
+TEST(LightScheduler, RemoveRecyclesScheduleSlot)
+{
+	int ii = 0;
+	for (ii = 0; ii < 128; ii++)
+	{
+		LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(6, MONDAY, 600+ii));
+	}
+	LightScheduler_ScheduleRemove(6, MONDAY, 600);
+	LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(13, MONDAY, 600+ii));
+}
+
+
 TEST_GROUP(LightSchedulerInitAndCleanup)
 {
 
