@@ -51,7 +51,7 @@ typedef struct
 
 static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
 
-static void scheduleEvent(int id, Day day, int minuteOfDay, int event);
+static int scheduleEvent(int id, Day day, int minuteOfDay, int event);
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent);
 static void operateLight(ScheduledLightEvent *pEvent);
 static int DoesLightRespondToday(Day eventDay, Day currentDay);
@@ -73,12 +73,12 @@ void LightScheduler_Destroy(void)
 	TimeService_CancelPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
 
-void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
+int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
-	scheduleEvent(id, day, minuteOfDay, TURN_ON);
+	return scheduleEvent(id, day, minuteOfDay, TURN_ON);
 }
 
-void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
+int LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
 	scheduleEvent(id, day, minuteOfDay, TURN_OFF);
 }
@@ -95,7 +95,7 @@ void LightScheduler_WakeUp(void)
 	}
 }
 
-static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
+static int scheduleEvent(int id, Day day, int minuteOfDay, int event)
 {
 	int ii = 0;
 
@@ -106,9 +106,10 @@ static void scheduleEvent(int id, Day day, int minuteOfDay, int event)
 			scheduledEvents[ii].event = event;
 			scheduledEvents[ii].id = id;
 			scheduledEvents[ii].day = day;
-			break;
+			return LS_OK;
 		}
 	}
+	return LS_TOO_MANY_EVENTS;
 }
 
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)
