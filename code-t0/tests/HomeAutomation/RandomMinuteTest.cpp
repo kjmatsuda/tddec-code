@@ -2,6 +2,7 @@ extern "C"
 {
 #include <stdio.h>
 #include <string.h>
+#include "RandomMinute.h"
 }
 #include "CppUTest/TestHarness.h"
 
@@ -13,7 +14,7 @@ TEST_GROUP(RandomMinute)
 
 	void setup()
 	{
-		RandomMinite_Create(BOUND);
+		RandomMinute_Create(BOUND);
 		srand(1);
 	}
 
@@ -39,22 +40,3 @@ TEST(RandomMinute, GetIsInRange)
 		AssertMinuteIsInRange();
 	}
 }
-
-TEST(RandomMinute, AllValuesPossible)
-{
-	int hit[2*BOUND + 1];
-	memset(hit, 0, sizeof(hit));
-	int ii;
-	for (ii = 0; ii < 225; ii++)
-	{
-		minute = RandomMinute_Get();
-		AssertMinuteIsInRange();
-		hit[minute + BOUND]++;
-	}
-	for (ii = 0; ii < 2* BOUND + 1; ii++)
-	{
-		CHECK(hit[ii] > 0);
-	}
-}
-
-
