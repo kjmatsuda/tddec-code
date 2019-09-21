@@ -2,6 +2,6 @@
 #define D_RandomMinute_H
 
 void RandomMinute_Create(int bound);
-int RandomMinute_Get(void);
+extern int (*RandomMinute_Get)(void);
 
 #endif  /* D_RandomMinute_H */
