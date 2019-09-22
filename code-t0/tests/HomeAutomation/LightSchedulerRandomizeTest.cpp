@@ -16,10 +16,6 @@ TEST_GROUP(LightSchedulerRandomize)
 	{
 		LightController_Create();
 		LightScheduler_Create();
-		// ランダム分生成関数のプロダクトコード版を退避し、テストダブル版を設定
-		// UT_PTR_SETはCppUTestで提供されているマクロで、これで設定した関数ポインタは
-		// teardownで自動的に元の値に戻される
-		UT_PTR_SET(RandomMinute_Get, FakeRandomMinute_Get);
 	}
 
 	void teardown()

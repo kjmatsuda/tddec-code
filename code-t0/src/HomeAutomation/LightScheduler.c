@@ -7,10 +7,10 @@
  * Visit http://www.pragmaticprogrammer.com/titles/jgade for more book information.
 ***/
 /*- ------------------------------------------------------------------ -*/
-/*-	Copyright (c) James W. Grenning -- All Rights Reserved		  -*/
-/*-	For use by owners of Test-Driven Development for Embedded C,	-*/
-/*-	and attendees of Renaissance Software Consulting, Co. training  -*/
-/*-	classes.                                                        -*/
+/*-    Copyright (c) James W. Grenning -- All Rights Reserved          -*/
+/*-    For use by owners of Test-Driven Development for Embedded C,    -*/
+/*-    and attendees of Renaissance Software Consulting, Co. training  -*/
+/*-    classes.                                                        -*/
 /*-                                                                    -*/
 /*-    Available at http://pragprog.com/titles/jgade/                  -*/
 /*-        ISBN 1-934356-62-X, ISBN13 978-1-934356-62-3                -*/
@@ -28,28 +28,25 @@
 #include "LightScheduler.h"
 #include "LightController.h"
 #include "TimeService.h"
-#include "RandomMinute.h"
 #include <stdlib.h>
 #include <string.h>
 
 enum
 {
-	TURN_ON, TURN_OFF, DIM, RANDOM_ON, RANDOM_OFF
+    TURN_ON, TURN_OFF, DIM, RANDOM_ON, RANDOM_OFF
 };
 
 enum
 {
-	MAX_EVENTS = 128, UNUSED = -1
+    MAX_EVENTS = 128, UNUSED = -1
 };
 
 typedef struct
 {
-	int id;
-	Day day;
-	int minuteOfDay;
-	int event;
-	int randomize;
-	int randomMinutes;
+    int id;
+    Day day;
+    int minuteOfDay;
+    int event;
 } ScheduledLightEvent;
 
 static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
@@ -58,9 +55,6 @@ static int scheduleEvent(int id, Day day, int minuteOfDay, int event);
 static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent);
 static void operateLight(ScheduledLightEvent *pEvent);
 static int DoesLightRespondToday(Day eventDay, Day currentDay);
-static BOOL matchEvent(ScheduledLightEvent * e, int id, Day day, int minute);
-static void resetRandomize(ScheduledLightEvent * event);
-static BOOL isEventDueNow(Time * time, ScheduledLightEvent * event);
 
 void LightScheduler_Create(void)
 {
@@ -86,7 +80,7 @@ int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 
 int LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
-	return scheduleEvent(id, day, minuteOfDay, TURN_OFF);
+	scheduleEvent(id, day, minuteOfDay, TURN_OFF);
 }
 
 void LightScheduler_WakeUp(void)
@@ -113,21 +107,6 @@ void LightScheduler_ScheduleRemove(int id, Day day, int minuteOfDay)
 		{
 			scheduledEvents[ii].id = UNUSED;
 			break;
-		}
-	}
-}
-
-void LightScheduler_Randomize(int id, Day day, int minute)
-{
-	int i;
-	ScheduledLightEvent *pEvent = scheduledEvents;
-
-	for (i = 0; i < MAX_EVENTS; i++, pEvent++)
-	{
-		if (matchEvent(pEvent, id, day, minute))
-		{
-			pEvent->randomize = RANDOM_ON;
-			resetRandomize(pEvent);
 		}
 	}
 }
@@ -160,11 +139,16 @@ static void processEventDueNow(Time *pTime, ScheduledLightEvent *pEvent)
 	{
 		return;
 	}
-	if (isEventDueNow(pTime, pEvent))
+	if (!DoesLightRespondToday(pEvent->day, pTime->dayOfWeek))
 	{
-		operateLight(pEvent);
-		resetRandomize(pEvent);
+		return;
 	}
+	if (pEvent->minuteOfDay != pTime->minuteOfDay)
+	{
+		return;
+	}
+
+	operateLight(pEvent);
 }
 
 static void operateLight(ScheduledLightEvent *pEvent)
@@ -209,32 +193,3 @@ static int DoesLightRespondToday(Day eventDay, Day currentDay)
 
 	return FALSE;
 }
-
-static BOOL matchEvent(ScheduledLightEvent * e, int id, Day day, int minute)
-{
-	return e->id == id && e->day == day && e->minuteOfDay == minute;
-}
-
-static void resetRandomize(ScheduledLightEvent * event)
-{
-	if (event->randomize == RANDOM_ON)
-		event->randomMinutes = RandomMinute_Get();
-	else
-		event->randomMinutes = 0;
-}
-
-static BOOL isEventDueNow(Time * time, ScheduledLightEvent * event)
-{
-	int todaysMinute = event->minuteOfDay + event->randomMinutes;
-	Day day = event->day;
-	if (time->minuteOfDay != todaysMinute)
-	{
-		return FALSE;
-	}
-	if (!DoesLightRespondToday(time->dayOfWeek, day))
-	{
-		return FALSE;
-	}
-	return TRUE;
-}
-

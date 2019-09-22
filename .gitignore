@@ -39,6 +39,3 @@ Debug
 RemoteSystemsTempFiles/*
 *.sublime*
 .cproject
-GPATH
-GRTAGS
-GTAGS
