@@ -17,10 +17,12 @@ CPP_PLATFORM = Gcc
 SRC_DIRS = \
 	src/util\
 	src/HomeAutomation\
+	src/IO\
 
 TEST_SRC_DIRS = \
 	tests \
 	tests/HomeAutomation\
+	tests/IO\
 	mocks
 	
 INCLUDE_DIRS =\

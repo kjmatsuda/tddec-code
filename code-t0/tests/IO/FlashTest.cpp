@@ -1,6 +1,7 @@
 extern "C"
 {
-#include "IO.h"
+#include "Flash.h"
+#include "MockIO.h"
 }
 #include "CppUTest/TestHarness.h"
 
@@ -8,10 +9,12 @@ TEST_GROUP(Flash)
 {
 	void setup()
 	{
+		MockIO_Create(4);
 	}
 
 	void teardown()
 	{
+		MockIO_Destroy();
 	}
 };
 
@@ -25,6 +28,6 @@ TEST(Flash, WriteSucceeds_ReadyImmediately)
 
 	result = Flash_Write(0x1000, 0xBEEF);
 
-	LONGS_EQUAL(0, result);
 	MockIO_Verify_Complete();
+	LONGS_EQUAL(0, result);
 }
