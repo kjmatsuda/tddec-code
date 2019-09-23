@@ -2,6 +2,7 @@
 #define INCLUDE_IO_FLASH_H_
 
 #include "IO.h"
+#include "m28w160ect.h"
 
 typedef enum
 {
@@ -13,6 +14,9 @@ typedef enum
 	FLASH_READ_BACK_ERROR,
 	FLASH_TIMEOUT_ERROR
 } FlashStatus;
+
+void Flash_Create();
+void Flash_Destroy();
 
 int Flash_Write(ioAddress address, ioData data);
 
