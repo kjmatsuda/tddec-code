@@ -49,9 +49,9 @@ typedef struct Expectation
 } Expectation;
 
 static Expectation * expectations = 0;
-static int setExpectationCount;
-static int getExpectationCount;
-static int maxExpectationCount;
+static int expectedCount;
+static int actualCount;
+static int maxExpectedCount;
 static int failureAlreadyReported = 0;
 
 static Expectation expected;
@@ -87,9 +87,9 @@ static const char * report_expectation_number =
 void MockIO_Create(int maxExpectations)
 {
 	expectations = calloc(maxExpectations, sizeof(Expectation));
-	setExpectationCount = 0;
-	getExpectationCount = 0;
-	maxExpectationCount = maxExpectations;
+	expectedCount = 0;
+	actualCount = 0;
+	maxExpectedCount = maxExpectations;
 	failureAlreadyReported = 0;
 }
 
@@ -115,16 +115,16 @@ static void failWhenNotInitialized(void)
 static void failWhenNoRoomForExpectations(char * message)
 {
 	failWhenNotInitialized();
-	if (setExpectationCount >= maxExpectationCount)
+	if (expectedCount >= maxExpectedCount)
 		fail(message);
 }
 
 void recordExpectation(int kind, ioAddress addr, ioData data)
 {
-	expectations[setExpectationCount].kind = kind;
-	expectations[setExpectationCount].addr = addr;
-	expectations[setExpectationCount].value = data;
-	setExpectationCount++;
+	expectations[expectedCqmemoriount].kind = kind;
+	expectations[expectedCount].addr = addr;
+	expectations[expectedCount].value = data;
+	expectedCount++;
 }
 
 void MockIO_Expect_Write(ioAddress addr, ioData value)
@@ -144,10 +144,10 @@ static void failWhenNoUnusedExpectations(char * format)
 	char message[100];
 	int size = sizeof message - 1;
 
-	if (getExpectationCount >= setExpectationCount)
+	if (actualCount >= expectedCount)
 	{
 		int offset = snprintf(message, size,
-				report_no_more_expectations, getExpectationCount + 1);
+				report_no_more_expectations, actualCount + 1);
 		snprintf(message + offset, size - offset,
 				format, actual.addr, actual.value);
 		fail(message);
@@ -156,8 +156,8 @@ static void failWhenNoUnusedExpectations(char * format)
 
 static void setExpectedAndActual(ioAddress addr, ioData value)
 {
-	expected.addr = expectations[getExpectationCount].addr;
-	expected.value = expectations[getExpectationCount].value;
+	expected.addr = expectations[actualCount].addr;
+	expected.value = expectations[actualCount].value;
 	actual.addr = addr;
 	actual.value = value;
 }
@@ -167,7 +167,7 @@ static void failExpectation(char * expectationFailMessage)
 	char message[100];
 	int size = sizeof message - 1;
 	int offset = snprintf(message, size,
-			report_expectation_number, getExpectationCount + 1);
+			report_expectation_number, actualCount + 1);
 	snprintf(message + offset, size - offset,
 			expectationFailMessage, expected.addr, expected.value,
 			actual.addr, actual.value);
@@ -182,7 +182,7 @@ static void failWhen(int condition, char * expectationFailMessage)
 
 static int expectationIsNot(int kind)
 {
-	return kind != expectations[getExpectationCount].kind;
+	return kind != expectations[actualCount].kind;
 }
 
 static int expectedAddressIsNot(ioAddress addr)
@@ -203,7 +203,7 @@ void IO_Write(ioAddress addr, ioData value)
 	failWhen(expectationIsNot(FLASH_WRITE), report_expect_read_was_write);
 	failWhen(expectedAddressIsNot(addr), report_write_does_not_match);
 	failWhen(expectedDataIsNot(value), report_write_does_not_match);
-	getExpectationCount++;
+	actualCount++;
 }
 
 ioData IO_Read(ioAddress addr)
@@ -214,7 +214,7 @@ ioData IO_Read(ioAddress addr)
 	failWhen(expectationIsNot(FLASH_READ), report_expect_write_was_read);
 	failWhen(expectedAddressIsNot(addr), report_read_wrong_address);
 
-	return expectations[getExpectationCount++].value;
+	return expectations[actualCount++].value;
 }
 
 static void failWhenNotAllExpectationsUsed(void)
@@ -222,11 +222,11 @@ static void failWhenNotAllExpectationsUsed(void)
 	char format[] = "Expected %d reads/writes but got %d";
 	char message[sizeof format + 5 + 5];
 
-	if (getExpectationCount == setExpectationCount)
+	if (actualCount == expectedCount)
 		return;
 
-	snprintf(message, sizeof message, format, setExpectationCount,
-			getExpectationCount);
+	snprintf(message, sizeof message, format, expectedCount,
+			actualCount);
 	fail(message);
 }
 
