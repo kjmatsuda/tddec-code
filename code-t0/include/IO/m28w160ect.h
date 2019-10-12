@@ -1,7 +1,10 @@
 #ifndef INCLUDE_IO_M28W160ECT_H_
 #define INCLUDE_IO_M28W160ECT_H_
 
-#define ReadyBit	(1 << 7)
+#define ReadyBit					(1 << 7)
+#define VppErrorBit					(1 << 3)
+#define ProgramErrorBit				(1 << 4)
+#define ProtectedBlockErrorBit		(1 << 1)
 
 typedef enum
 {
