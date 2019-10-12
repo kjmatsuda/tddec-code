@@ -121,7 +121,7 @@ static void failWhenNoRoomForExpectations(char * message)
 
 void recordExpectation(int kind, ioAddress addr, ioData data)
 {
-	expectations[expectedCqmemoriount].kind = kind;
+	expectations[expectedCount].kind = kind;
 	expectations[expectedCount].addr = addr;
 	expectations[expectedCount].value = data;
 	expectedCount++;
