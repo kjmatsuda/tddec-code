@@ -3,6 +3,7 @@
 
 #include "IO.h"
 #include "m28w160ect.h"
+#include "MicroTime.h"
 
 typedef enum
 {
@@ -14,6 +15,8 @@ typedef enum
 	FLASH_READ_BACK_ERROR,
 	FLASH_TIMEOUT_ERROR
 } FlashStatus;
+
+#define FLASH_WRITE_TIMEOUT_IN_MICROSECONDS		(5000)
 
 void Flash_Create();
 void Flash_Destroy();

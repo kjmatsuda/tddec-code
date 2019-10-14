@@ -2,6 +2,7 @@ extern "C"
 {
 #include "Flash.h"
 #include "MockIO.h"
+#include "FakeMicroTime.h"
 }
 #include "CppUTest/TestHarness.h"
 
@@ -17,7 +18,7 @@ TEST_GROUP(Flash)
 		data = 0xBEEF;
 		result = -1;
 
-		MockIO_Create(10);
+		MockIO_Create(20);
 		Flash_Create();
 	}
 
@@ -117,3 +118,21 @@ TEST(Flash, WriteSucceeds_IgnoresOtherBitsUntilReady)
 
 	LONGS_EQUAL(FLASH_SUCCESS, result);
 }
+
+TEST(Flash, WriteFails_Timeout)
+{
+	FakeMicroTime_Init(0, 500);
+	Flash_Create();
+
+	MockIO_Expect_Write(CommandRegister, ProgramCommand);
+	MockIO_Expect_Write(address, data);
+
+	for (int ii = 0; ii < 10; ii++)
+	{
+		MockIO_Expect_ReadThenReturn(StatusRegister, ~ReadyBit);
+	}
+
+	result = Flash_Write(address, data);
+	LONGS_EQUAL(FLASH_TIMEOUT_ERROR, result);
+}
+
