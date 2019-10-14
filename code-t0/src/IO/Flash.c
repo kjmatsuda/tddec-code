@@ -42,7 +42,12 @@ int Flash_Write(ioAddress address, ioData data)
 			return FLASH_UNKNOWN_PROGRAM_ERROR;
 		}
 	}
-	IO_Read(address);
+
+	// Check read back error
+	if (IO_Read(address) != data)
+	{
+		return FLASH_READ_BACK_ERROR;
+	}
 
 	return FLASH_SUCCESS;
 }
