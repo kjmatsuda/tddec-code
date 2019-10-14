@@ -1,5 +1,6 @@
 #include "Flash.h"
 
+static FlashStatus writeError(status);
 
 void Flash_Create()
 {
@@ -23,24 +24,7 @@ int Flash_Write(ioAddress address, ioData data)
 	}
 	if (status != ReadyBit)
 	{
-		IO_Write(CommandRegister, Reset);
-
-		if (status & VppErrorBit)
-		{
-			return FLASH_VPP_ERROR;
-		}
-		else if (status & ProgramErrorBit)
-		{
-			return FLASH_PROGRAM_ERROR;
-		}
-		else if (status & ProtectedBlockErrorBit)
-		{
-			return FLASH_PROTECTED_BLOCK_ERROR;
-		}
-		else
-		{
-			return FLASH_UNKNOWN_PROGRAM_ERROR;
-		}
+		return writeError(status);
 	}
 
 	// Check read back error
@@ -50,4 +34,26 @@ int Flash_Write(ioAddress address, ioData data)
 	}
 
 	return FLASH_SUCCESS;
+}
+
+static FlashStatus writeError(status)
+{
+	IO_Write(CommandRegister, Reset);
+
+	if (status & VppErrorBit)
+	{
+		return FLASH_VPP_ERROR;
+	}
+	else if (status & ProgramErrorBit)
+	{
+		return FLASH_PROGRAM_ERROR;
+	}
+	else if (status & ProtectedBlockErrorBit)
+	{
+		return FLASH_PROTECTED_BLOCK_ERROR;
+	}
+	else
+	{
+		return FLASH_UNKNOWN_PROGRAM_ERROR;
+	}
 }
