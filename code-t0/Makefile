@@ -29,6 +29,8 @@ INCLUDE_DIRS =\
   $(CPPUTEST_HOME)/include/\
   include/*\
   mocks
-  
+
+CPPUTEST_USE_EXTENSIONS = Y
+
 include ../CppUTestCompileFlags.mk
 include ../cpputest/build/MakefileWorker.mk
